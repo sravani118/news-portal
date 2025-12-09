@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:development": "cross-env NODE_ENV=development next build",
+     "build:staging": "cross-env NEXT_PUBLIC_ENV=staging next build",
+  "build:production": "cross-env NEXT_PUBLIC_ENV=production next build"
   },
   "dependencies": {
     "next": "16.0.8",
