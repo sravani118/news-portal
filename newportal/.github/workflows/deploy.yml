@@ -1,0 +1,71 @@
+name: Build & Deploy - News Portal (Env Aware)
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  build-staging:
+    name: Build for STAGING
+    runs-on: ubuntu-latest
+    # Only run when pushing to 'staging' branch
+    if: github.ref == 'refs/heads/staging'
+
+    env:
+      NEXT_PUBLIC_ENV: staging
+      # All of these come from GitHub Secrets (no hardcoding)
+      BREAKING_API_URL: ${{ secrets.STAGING_BREAKING_API_URL }}
+      NEWS_API_URL: ${{ secrets.STAGING_NEWS_API_URL }}
+      DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build (staging)
+        run: npm run build:staging
+
+      # Example: you could deploy to a server/hosting here
+      # - name: Deploy to Staging Server
+      #   run: echo "Deploying staging build..."
+
+  build-production:
+    name: Build for PRODUCTION
+    runs-on: ubuntu-latest
+    # Only run when pushing to 'main' branch
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      NEXT_PUBLIC_ENV: production
+      BREAKING_API_URL: ${{ secrets.PROD_BREAKING_API_URL }}
+      NEWS_API_URL: ${{ secrets.PROD_NEWS_API_URL }}
+      DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build (production)
+        run: npm run build:production
+
+      # Example: deployment step placeholder
+      # - name: Deploy to Production Server
+      #   run: echo "Deploying production build..."
